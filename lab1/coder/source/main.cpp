@@ -15,5 +15,8 @@ int main() {
     // P.s. Так что отключено по умолчанию
     coder.decode("../../orwell.txt-coded", false);
 
+    // Вывод всех кодов на экран
+    coder.print();
+
     return 0;
 }
