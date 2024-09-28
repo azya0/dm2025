@@ -70,7 +70,7 @@ Coder::Coder(std::string const &filename) {
     buildCodeTree();
 }
 
-void Coder::code(std::string const &filename) {
+void Coder::code(std::string const &filename, bool showCode) {
     std::ifstream input(filename);
 
     if (!input.is_open()) {
@@ -86,14 +86,24 @@ void Coder::code(std::string const &filename) {
     while (!input.eof()) {
         input >> letter;
 
-        output << lettersToCodes[letter];
+        std::string code = lettersToCodes[letter];
+
+        if (showCode) {
+            std::cout << "Char: \"" << letter << '"' << " coded as: \"" << code << "\"\n";
+        }
+
+        output << code;
     }
 
     input.close();
     output.close();
 }
 
-void Coder::decode(std::string const &filename) {
+void Coder::code(std::string const &filename) {
+    code(filename, false);
+}
+
+void Coder::decode(std::string const &filename, bool showCode) {
     std::ifstream input(filename);
 
     if (!input.is_open()) {
@@ -111,13 +121,23 @@ void Coder::decode(std::string const &filename) {
         code += letter;
 
         if (codesToLetters.find(code) != codesToLetters.end()) {
-            output << codesToLetters[code];
+            char letter = codesToLetters[code];
+
+            if (showCode) {
+                std::cout << "Code: \"" << code << '"' << " decoded as: \"" << letter << "\"\n";
+            }
+
+            output << letter;
             code.clear();
         }
     }
 
     input.close();
     output.close();
+}
+
+void Coder::decode(std::string const &filename) {
+    decode(filename, false);
 }
 
 void Coder::print() {

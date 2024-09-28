@@ -19,8 +19,10 @@ private:
 public:
     Coder(std::string const & filename);
 
+    void code(std::string const & filename, bool showCode);
     void code(std::string const & filename);
 
+    void decode(std::string const & filename, bool showCode);
     void decode(std::string const & filename);
 
     void print();
