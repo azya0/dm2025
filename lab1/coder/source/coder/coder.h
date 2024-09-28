@@ -6,8 +6,6 @@
 #include <queue>
 #include <unordered_map>
 
-#include "../bin-tree/bin-tree.h"
-
 
 class Coder {
 private:
