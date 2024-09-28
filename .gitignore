@@ -1,0 +1,11 @@
+# python
+.venv
+
+# cpp
+.build
+
+# custom
+*test*
+*.bat
+*.exe
+*coded*
