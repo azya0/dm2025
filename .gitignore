@@ -1,11 +1,11 @@
 #vscode
-.vscode
+*.vscode
 
 # python
 .venv
 
 # cpp
-.build
+.build*
 
 # custom
 *test*
