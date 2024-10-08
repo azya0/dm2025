@@ -17,7 +17,7 @@ void Application::argumentParser(void (Application::*function)(std::string input
     std::string outputFile;
     bool showCode = false;
 
-    for (int index = 2; index < length; index++) {
+    for (int index = 2; index <= length; index++) {
         std::string arg(args[index]);
 
         if (arg == "-s") {
@@ -27,7 +27,7 @@ void Application::argumentParser(void (Application::*function)(std::string input
 
             showCode = true;
         } else if (arg == "-i" || arg == "-o") {
-            if ((index + 1) >= length) {
+            if ((index + 1) > length) {
                 throw std::runtime_error("error: few arguments\nuse \"[-h | --help] code\"");
             }
 
@@ -105,16 +105,16 @@ void Application::parse() {
             throw std::runtime_error("error: unknown arguments\nuse \"[-h | --help] --version\"");
         }
     } else if (subcommand == "code") {
-        argumentParser(&code);
+        argumentParser(&Application::code);
     } else if (subcommand == "decode") {
-        argumentParser(&decode);
+        argumentParser(&Application::decode);
     } else {
         throw std::runtime_error("error: unknown subcommand\nuse \"[-h | --help]\" to get subcommands list" );
     }
 }
 
 Application::Application(int numberOfArguments, char **arguments) {
-    length = numberOfArguments;
+    length = numberOfArguments - 1;
     args = arguments;
 
     parse();
