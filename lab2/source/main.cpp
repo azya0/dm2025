@@ -69,9 +69,14 @@ int main() {
         std::string graphName;
         std::cin >> graphName;
 
+        auto nodes = *graph->Nodes();
+
+        if (nodes.find(graphName) == nodes.end()) {
+            throw std::runtime_error("no node " + graphName);
+        }
+
         auto data = graph->Ways(graphName);
 
-        auto nodes = *graph->Nodes();
 
         for (auto &[key, value] : nodes) {
             auto nodeData = data.find(value);
