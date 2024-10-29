@@ -67,7 +67,7 @@ std::shared_ptr<Graph::NodesT const> Graph::Nodes() {
 std::unordered_map<std::shared_ptr<Node>, std::shared_ptr<Graph::Pair>> Graph::Ways(std::string const &from) {
     auto start = find(from);
 
-    // OWL вмместо стека для удобной
+    // OWL вместо стека для удобной
     // сортировки для нахождения
     // минимального элемента
     // для оптимизации жадного
