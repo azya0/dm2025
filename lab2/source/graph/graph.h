@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -33,12 +35,23 @@ struct GraphData {
 };
 
 class Graph {
+public:
+    using WayT = std::queue<std::shared_ptr<Node>>;
+    using Pair = std::pair<int, WayT>;
+    using NodesT = std::unordered_map<std::string, std::shared_ptr<Node>>;
 private:
-    std::unordered_map<std::string, std::shared_ptr<Node>> nodes;
+    NodesT nodes;
 public:
     Graph(std::vector<GraphData> data);
 
     std::shared_ptr<Node> find(std::string const & target);
 
-    std::pair<int, std::queue<std::shared_ptr<Node>>> Way(std::string const & from, std::string const & to);
+    std::shared_ptr<NodesT const> Nodes();
+
+    std::unordered_map<
+        std::shared_ptr<Node>,
+        std::shared_ptr<Pair>
+    > Ways(std::string const & from);
+
+    Pair Way(std::string const & from, std::string const & to);
 };

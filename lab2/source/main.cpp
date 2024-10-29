@@ -66,10 +66,22 @@ int main() {
     try {
         graph = std::make_shared<Graph>(parseFile(filename));
 
-        auto data = graph->Way("A", "C");
+        auto data = graph->Ways("A");
 
-        std::cout << data.first << '\n';
-        printWay(data.second);
+        auto nodes = *graph->Nodes();
+
+        for (auto &[key, value] : nodes) {
+            auto nodeData = data.find(value);
+
+            if (nodeData == data.end()) {
+                std::cout << "no way A -> " << key << '\n';
+                continue;
+            }
+
+            std::cout << "A -> " << key << " : " << nodeData->second->first << ' '; 
+            printWay(nodeData->second->second);
+            std::cout << '\n';
+        }
     } catch (std::exception& error) {
         std::cout << error.what();
         return 1;

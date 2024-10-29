@@ -60,12 +60,12 @@ std::shared_ptr<Node> Graph::find(std::string const & target) {
     return data->second;
 }
 
-std::pair<int, std::queue<std::shared_ptr<Node>>> Graph::Way(std::string const & from, std::string const & to) {
-    auto start = find(from);
-    auto target = find(to);
+std::shared_ptr<Graph::NodesT const> Graph::Nodes() {
+    return std::make_shared<Graph::NodesT const>(nodes);
+}
 
-    using Way = std::queue<std::shared_ptr<Node>>;
-    using Pair = std::pair<int, Way>;
+std::unordered_map<std::shared_ptr<Node>, std::shared_ptr<Graph::Pair>> Graph::Ways(std::string const &from) {
+    auto start = find(from);
 
     // OWL вмместо стека для удобной
     // сортировки для нахождения
@@ -82,7 +82,7 @@ std::pair<int, std::queue<std::shared_ptr<Node>>> Graph::Way(std::string const &
         std::shared_ptr<Pair>
     > ways;
 
-    auto startPair = std::make_shared<Pair>(0, Way({start}));
+    auto startPair = std::make_shared<Pair>(0, WayT({start}));
     ways[start] = startPair;
 
     auto stack = std::make_shared<OneWayList>(nullptr, nullptr);
@@ -115,9 +115,17 @@ std::pair<int, std::queue<std::shared_ptr<Node>>> Graph::Way(std::string const &
         }
     }
 
-    auto result = ways.find(target);
+    return ways;
+}
 
-    if (result == ways.end()) {
+Graph::Pair Graph::Way(std::string const & from, std::string const & to) {
+    auto target = find(to);
+
+    auto map = Ways(from);
+    
+    auto result = map.find(target);
+
+    if (result == map.end()) {
         throw std::runtime_error("no ways found");
     }
 
