@@ -1,10 +1,15 @@
 #include "graph.h"
 
-Node::Node(std::shared_ptr<std::vector<Rib>> nodes) {
+Node::Node(std::shared_ptr<std::vector<Rib>> nodes, std::string const & _name) : Node(name) {
     ribs = std::move(*nodes);
 }
 
-std::shared_ptr<std::vector<Node::Rib>> Node::Nodes() {
+Node::Node(std::string const &_name) {
+    name = _name;
+}
+
+std::shared_ptr<std::vector<Node::Rib>> Node::Nodes()
+{
     return std::make_shared<std::vector<Rib>>(std::move(ribs));
 }
 
@@ -16,11 +21,15 @@ std::vector<Node::Rib> Node::getRibs() {
     return ribs;
 }
 
+std::string const & Node::getName() {
+    return name;
+}
+
 Graph::Graph(std::vector<GraphData> data) {
     std::unordered_map<std::shared_ptr<Node>, std::vector<GraphData::DataPair>> toAdd;
     
     for (auto graph : data) {
-        auto currentNode = std::make_shared<Node>();
+        auto currentNode = std::make_shared<Node>(graph.name);
         nodes[graph.name] = currentNode;
 
         for (auto rib : graph.ribs) {
@@ -51,72 +60,58 @@ std::shared_ptr<Node> Graph::find(std::string const & target) {
     return data->second;
 }
 
-std::pair<std::shared_ptr<Graph::TwoWayList>, int> Graph::Way(std::string const & from, std::string const & to) {
+std::pair<int, std::queue<std::shared_ptr<Node>>> Graph::Way(std::string const & from, std::string const & to) {
     auto start = find(from);
     auto target = find(to);
 
-    auto copy = [](TwoWayList value) {
-        auto result = TwoWayList{
-            value.to,
-            value.weight,
-            value.next,
-            value.prev,
-            value.start
-        };
+    using Way = std::queue<std::shared_ptr<Node>>;
+    using Pair = std::pair<int, Way>;
 
-        return result;
-    };
-
-    // Буду использовать вместо стека
-    // Для автоматической сортировки
-
+    // OWL вмместо стека для удобной
+    // сортировки для нахождения
+    // минимального элемента
+    // для оптимизации жадного
+    // алгоритма
     typedef struct OWL {
         std::shared_ptr<OWL> next;
-        std::shared_ptr<TwoWayList> value;
+        std::shared_ptr<Pair> value;
     } OneWayList;
     
     std::unordered_map<
         std::shared_ptr<Node>,
-        std::pair<int, std::shared_ptr<TwoWayList>>
+        std::shared_ptr<Pair>
     > ways;
 
-    auto startWay = std::make_shared<TwoWayList>(start, 0, nullptr, nullptr, nullptr);
-    ways[start] = {0, startWay};
+    auto startPair = std::make_shared<Pair>(0, Way({start}));
+    ways[start] = startPair;
 
     auto stack = std::make_shared<OneWayList>(nullptr, nullptr);
-    stack->next = std::make_shared<OneWayList>(nullptr, startWay);
+    stack->next = std::make_shared<OneWayList>(nullptr, startPair);
 
     while (stack->next != nullptr) {
         auto current = stack->next->value;
         stack->next = stack->next->next;
 
-        for (auto &[node, weight] : current->to->getRibs()) {
+        for (auto &[node, weight] : current->second.back()->getRibs()) {
             auto way = ways.find(node);
-            int weightToNode = current->weight + weight;
+            int weightToNode = current->first + weight;
 
-            if (way != ways.end() && way->second.first <= weightToNode) {
+            if (way != ways.end() && way->second->first <= weightToNode) {
                 continue;
             }
 
-            auto copyWay = std::make_shared<TwoWayList>(copy(*current));
-            auto currentWay = std::make_shared<TwoWayList>(
-                node,
-                weightToNode,
-                nullptr,
-                copyWay,
-                copyWay->start
-            );
-            copyWay->next = currentWay;
+            auto copyPair = std::make_shared<Pair>(weightToNode, current->second);
+            copyPair->second.push(node);
 
-            ways[node] = {weightToNode, currentWay};
+            ways[node] = copyPair;
 
             auto currentStack = stack;
 
-            while (currentStack->next != nullptr && currentStack->next->value->weight < weightToNode) {
+            while (currentStack->next != nullptr && currentStack->next->value->first < weightToNode) {
                 currentStack = currentStack->next;
             }
             
-            currentStack->next = std::make_shared<OneWayList>(currentStack->next, currentWay);
+            currentStack->next = std::make_shared<OneWayList>(currentStack->next, copyPair);
         }
     }
 
@@ -126,5 +121,5 @@ std::pair<std::shared_ptr<Graph::TwoWayList>, int> Graph::Way(std::string const 
         throw std::runtime_error("no ways found");
     }
 
-    return {result->second.second->start, result->second.first};
+    return (*result->second);
 }

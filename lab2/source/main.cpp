@@ -40,6 +40,22 @@ std::vector<GraphData> parseFile(std::string const & filename) {
     return result;
 }
 
+void printWay(std::queue<std::shared_ptr<Node>> const & way) {
+    auto current = way;
+    
+    while (true) {
+        std::cout << current.front()->getName();
+        current.pop();
+        
+
+        if (current.empty()) {
+            return;
+        }
+
+        std::cout << " -> "; 
+    }
+}
+
 int main() {
     std::string filename;
 
@@ -49,7 +65,11 @@ int main() {
 
     try {
         graph = std::make_shared<Graph>(parseFile(filename));
-        std::cout << graph->Way("A", "C").second;
+
+        auto data = graph->Way("A", "C");
+
+        std::cout << data.first << '\n';
+        printWay(data.second);
     } catch (std::exception& error) {
         std::cout << error.what();
         return 1;
