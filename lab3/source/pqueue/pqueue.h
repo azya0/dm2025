@@ -69,26 +69,53 @@ private:
 
         return chooseBest(index, *_descendants.first);
     }
-public:
-    PQueue(std::shared_ptr<function> _function_ptr) noexcept {
-        function_ptr = _function_ptr;
-    }
 
-    void push(T value) noexcept {
-        int currentIndex = list.size();
-        list.push_back(value);
+    void up(int index) {
+        while (index != 0) {
+            int parentIndex = (index - 1) / 2;
 
-        while (currentIndex != 0) {
-            int parentIndex = (currentIndex - 1) / 2;
-
-            if ((*function_ptr)(list[currentIndex], list[parentIndex])) {
-                swap(currentIndex, parentIndex);
-                currentIndex = parentIndex;
+            if ((*function_ptr)(list[index], list[parentIndex])) {
+                swap(index, parentIndex);
+                index = parentIndex;
                 continue;
             }
 
             break;
         }
+    }
+
+    void down(int index) {
+        while (true) {
+            int bestIndex = getBestDescendant(index);
+
+            if (bestIndex == -1) {
+                break;
+            }
+
+            swap(index, bestIndex);
+            index = bestIndex;
+        }
+    }
+public:
+    PQueue(std::shared_ptr<function> _function_ptr) noexcept {
+        function_ptr = _function_ptr;
+    }
+
+    void fromVector(std::vector<T>& data) {
+        if (list.size() != 0) {
+            throw std::runtime_error("pqueue is not empty");
+        }
+
+        list = std::move(data); 
+        for (int index = list.size() / 2; index >= 0; index--) {
+            down(index);
+        }
+    }
+
+    void push(T value) noexcept {
+        int currentIndex = list.size();
+        list.push_back(value);
+        up(currentIndex);
     }
 
     T pop() {
@@ -108,16 +135,7 @@ public:
         list[currentIndex] = list[size - 1];
         list.pop_back();
 
-        while (true) {
-            int bestIndex = getBestDescendant(currentIndex);
-
-            if (bestIndex == -1) {
-                break;
-            }
-
-            swap(currentIndex, bestIndex);
-            currentIndex = bestIndex;
-        }
+        down(currentIndex);
 
         return result;
     }

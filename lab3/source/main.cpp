@@ -10,9 +10,7 @@ int main() {
 
     PQueue<int> queue(std::make_shared<std::function<bool(int, int)>>(chooseFunction));
 
-    for (auto value : array) {
-        queue.push(value);
-    }
+    queue.fromVector(array);
 
     std::vector<int> check;
 
