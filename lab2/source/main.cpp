@@ -77,7 +77,6 @@ int main() {
 
         auto data = graph->Ways(graphName);
 
-
         for (auto &[key, value] : nodes) {
             auto nodeData = data.find(value);
 

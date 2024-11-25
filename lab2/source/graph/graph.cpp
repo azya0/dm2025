@@ -8,8 +8,7 @@ Node::Node(std::string const &_name) {
     name = _name;
 }
 
-std::shared_ptr<std::vector<Node::Rib>> Node::Nodes()
-{
+std::shared_ptr<std::vector<Node::Rib>> Node::Nodes() {
     return std::make_shared<std::vector<Rib>>(std::move(ribs));
 }
 
