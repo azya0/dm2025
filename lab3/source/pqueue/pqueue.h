@@ -17,7 +17,7 @@ private:
         list[secondIndex] = buffer;
     }
 
-    using descendants = std::pair<std::shared_ptr<T>, std::shared_ptr<T>>;
+    using descendants = std::pair<std::shared_ptr<int>, std::shared_ptr<int>>;
 
     std::shared_ptr<int> getCorrectIndex(int index) noexcept {
         if (index < list.size()) {
@@ -138,6 +138,10 @@ public:
         down(currentIndex);
 
         return result;
+    }
+
+    int size() noexcept {
+        return list.size();
     }
 
     bool empty() noexcept {
