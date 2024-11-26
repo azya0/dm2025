@@ -61,9 +61,12 @@ std::shared_ptr<Graph> Builder::buildGraph(std::shared_ptr<std::vector<int>> pow
         for (int index = 0; index < current.first; index++) {
             Pair currentAdjacent = pqueue.pop();
 
+            if (currentAdjacent.first == 0) {
+                return nullptr;
+            }
+
             graphData[currentAdjacent.second].ribs.push_back({graphData[current.second].name, 1});
             graphData[current.second].ribs.push_back({graphData[currentAdjacent.second].name, 1});
-            
 
             if (currentAdjacent.first > 1) {
                 currentAdjacent.first--;
