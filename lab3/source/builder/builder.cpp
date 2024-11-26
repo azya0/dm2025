@@ -1,21 +1,14 @@
 #include "builder.h"
 
-bool compareFunction(int first, int second) {
-    return first < second;
-}
-
 std::shared_ptr<std::vector<int>> Builder::buildPowerSeries(std::shared_ptr<Graph> graph) {
-    PQueue<int> pqueue(std::make_shared<std::function<bool(int, int)>>(compareFunction));
     auto nodes = graph->Nodes();
-    auto result = std::make_shared<std::vector<int>>((*nodes).size());
+    auto result = std::make_shared<std::vector<int>>();
 
     for (auto &[_, value] : *nodes) {
-        pqueue.push((*value).ribNumber());
+        result->push_back((*value).ribNumber());
     }
 
-    for (int index = 0; index < result->size(); index++) {
-        (*result)[index] = pqueue.pop();
-    }
+    std::sort(result->begin(), result->end());
     
     return result;
 }
