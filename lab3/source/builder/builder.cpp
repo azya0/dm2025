@@ -44,12 +44,8 @@ std::shared_ptr<Graph> Builder::buildGraph(std::shared_ptr<std::vector<int>> pow
 
     for (int index = 0; index < graphData.size(); index++) {
         graphData[index].name = nameFromInt(index);
+        data[index] = std::make_pair((*powerSeries)[index], index);
     }
-
-    std::transform(
-        powerSeries->begin(), powerSeries->end(), data.begin(),
-        [n = 0](int value) mutable { return std::make_pair(value, n++); }
-    );
 
     pqueue.fromVector(data);
 
