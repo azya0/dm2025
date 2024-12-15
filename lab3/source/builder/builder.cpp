@@ -74,4 +74,3 @@ std::shared_ptr<Graph> Builder::buildGraph(std::shared_ptr<std::vector<int>> pow
 
     return std::make_shared<Graph>(graphData);
 }
-
