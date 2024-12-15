@@ -130,3 +130,4 @@ Graph::Pair Graph::Way(std::string const & from, std::string const & to) {
 
     return (*result->second);
 }
+
