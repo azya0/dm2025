@@ -7,6 +7,7 @@ bool Builder::isEuler(std::shared_ptr<Graph> graph) {
 
     for (const auto& [_, value] : nodes) {
         int number = value->ribNumber();
+
         if ((number == 0) || (number % 2 != 0)) {
             return false;
         }
@@ -41,6 +42,10 @@ std::shared_ptr<Builder::Loop> Builder::eulerLoop(std::shared_ptr<Graph> graph) 
             current->rmRib(another);
             another->rmRib(current);
         }
+    }
+
+    if (result->size() - 1 != graph->Nodes()->size()) {
+        return nullptr;
     }
 
     return result;
