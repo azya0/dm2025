@@ -24,6 +24,7 @@ std::shared_ptr<Builder::Loop> Builder::eulerLoop(std::shared_ptr<Graph> graph) 
     auto result = std::make_shared<Builder::Loop>();
     std::stack<std::shared_ptr<Node>> nodeStack;
     nodeStack.push(graph->Nodes()->begin()->second);
+    std::unordered_set<std::shared_ptr<Node>> nodeSet;
 
     std::shared_ptr<Node> current, another;
 
@@ -33,9 +34,14 @@ std::shared_ptr<Builder::Loop> Builder::eulerLoop(std::shared_ptr<Graph> graph) 
         auto nodes = current->Nodes();
 
         if (nodes->empty()) {
+            std::cout << 1 << '\n';
+
             nodeStack.pop();
             result->push_back(current);
+            nodeSet.insert(current);
         } else {
+            std::cout << 2 << '\n';
+            
             another = nodes->begin()->first;
             nodeStack.push(another);
 
@@ -44,7 +50,7 @@ std::shared_ptr<Builder::Loop> Builder::eulerLoop(std::shared_ptr<Graph> graph) 
         }
     }
 
-    if (result->size() - 1 != graph->Nodes()->size()) {
+    if (nodeSet.size() != graph->Nodes()->size()) {
         return nullptr;
     }
 
