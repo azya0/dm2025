@@ -58,7 +58,7 @@ void printLoop(std::shared_ptr<Builder::Loop> loop) {
     std::cout << "Loop:\n";
 
     if (loop->size() == 0) {
-        std::cout << "Empty?...";
+        std::cout << "Empty?...\n";
         return;
     }
 
@@ -72,7 +72,14 @@ void printLoop(std::shared_ptr<Builder::Loop> loop) {
 }
 
 int main() {
-    std::string filename = "graph.txt";
+    std::string filename;
+    std::cout << "Enter a file name (base graph.txt):\n";
+    std::cin >> filename;
+
+    if (filename == "") {
+        filename = "graph.txt";
+    }
+
     std::shared_ptr<Graph> graph;
 
     try {
