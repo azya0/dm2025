@@ -1,7 +1,5 @@
 #include "builder.h"
 
-#include <iostream>
-
 bool Builder::isEuler(std::shared_ptr<Graph> graph) {
     auto nodes = *(graph->Nodes());
 
@@ -34,14 +32,10 @@ std::shared_ptr<Builder::Loop> Builder::eulerLoop(std::shared_ptr<Graph> graph) 
         auto nodes = current->Nodes();
 
         if (nodes->empty()) {
-            std::cout << 1 << '\n';
-
             nodeStack.pop();
             result->push_back(current);
             nodeSet.insert(current);
         } else {
-            std::cout << 2 << '\n';
-            
             another = nodes->begin()->first;
             nodeStack.push(another);
 
